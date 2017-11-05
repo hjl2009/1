@@ -1,0 +1,59 @@
+#include<stdio.h>
+#include<stdlib.h>
+void Warshall(int,int**);
+void main()
+{
+    int i,j,num;
+    printf("请输入矩阵的顶点数：\n");
+    scanf("%d",&num);
+
+    int **r=(int**)malloc(sizeof(int*)*(num+1));
+    for(i=0;i<num+1;i++)
+        r[i]=(int*)malloc(sizeof(int)*(num+1));
+        printf("请输入矩阵的各个顶点的数值：\n");
+    for(i=1;i<num+1;i++)
+        for(j=1;j<num+1;j++){
+                printf("第%d行%d列：",i,j);
+            scanf("%d",&r[i][j]);
+        }
+    printf("顶点个数为：%d\n",num);
+    printf("邻接矩阵为：\n");
+    for(i=1;i<num+1;i++)
+    {
+        for(j=1;j<num+1;j++)
+            printf(" %d  ",r[i][j]);
+        printf("\n");
+    }
+    Warshall(num,r);///通过矩阵自身相乘使得对角线上的值为1，通过对应关系使得元素指向其自身
+    printf("最终的传递闭包为\n");
+    for(i=1;i<num+1;i++)
+    {
+        for(j=1;j<num+1;j++)
+            printf(" %d  ",r[i][j]);
+        printf("\n");
+    }
+
+}
+
+///r为邻接矩阵，中间存储初试的可达与非可达路径情况，1表示可达，0表示不可达
+void Warshall(int num,int**r)
+{
+    int i,j,k;
+    int **temp=(int**)malloc(sizeof(int*)*(num+1));
+    for(i=0;i<num+1;i++)
+        temp[i]=(int*)malloc(sizeof(int)*(num+1));
+    for(k=1;k<=num;k++)///依次取得的可以作为中间点的顶点
+    {
+        for(i=1;i<=num;i++)
+        {
+            for(j=1;j<=num;j++)
+            {
+                temp[i][j]=(r[i][j])||(r[i][k]&r[k][j]);///参考自离散数学课本p212引理2
+            }
+        }
+        for(i=1;i<=num;i++)
+            for(j=1;j<=num;j++)
+                r[i][j]=temp[i][j];
+    }
+
+}
